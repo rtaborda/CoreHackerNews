@@ -1,6 +1,7 @@
 ﻿using CoreHackerNews.Models;
 using Microsoft.Extensions.Caching.Memory;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,15 +42,14 @@ namespace CoreHackerNews
                     return null;
 
                 var topCountStoryIds = bestStoryIds.Take(_configuration.BestStoriesSize);
-                var results = new List<NewsItem>(_configuration.BestStoriesSize);
+                var results = new ConcurrentBag<NewsItem>();
                 var tasks = new List<Task>(_configuration.BestStoriesSize);
 
                 foreach (var storyId in topCountStoryIds)
                 {
                     tasks.Add(Task.Run(async () =>
                     {
-                        var storyDetails = await _hackerNewsClient.GetStoryDetailsAsync(storyId);
-                        results.Add(storyDetails);
+                        results.Add(await _hackerNewsClient.GetStoryDetailsAsync(storyId));
                     }));
                 }
 
