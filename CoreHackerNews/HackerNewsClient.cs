@@ -34,27 +34,31 @@ namespace CoreHackerNews
 
         private async Task<T> SendGetRequestAsync<T>(Uri requestUri)
         {
+            using var response = await SendGetRequestAsync(requestUri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseJson = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrWhiteSpace(responseJson))
+                {
+                    return default;
+                }
+
+                return JsonConvert.DeserializeObject<T>(responseJson);
+            }
+            else
+            {
+                throw new HackerNewsClientException(response.StatusCode, response.ReasonPhrase);
+            }
+        }
+
+        private async Task<HttpResponseMessage> SendGetRequestAsync(Uri requestUri)
+        {
             using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
 
             try
             {
-                using var response = await _httpClient.SendAsync(request);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseJson = await response.Content.ReadAsStringAsync();
-                    if (string.IsNullOrWhiteSpace(responseJson))
-                    {
-                        return default;
-                    }
-
-                    return JsonConvert.DeserializeObject<T>(responseJson);
-                }
-                else
-                {
-                    // TODO check if this triggers the catch
-                    throw new HackerNewsClientException(response.StatusCode, response.ReasonPhrase);
-                }
+                return await _httpClient.SendAsync(request);
             }
             catch (Exception ex) when (ex is ArgumentNullException || ex is InvalidOperationException || ex is HttpRequestException)
             {
