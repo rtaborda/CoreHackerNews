@@ -42,15 +42,18 @@ namespace CoreHackerNews
 
                 var topCountStoryIds = bestStoryIds.Take(_configuration.BestStoriesSize);
                 var results = new List<NewsItem>(_configuration.BestStoriesSize);
+                var tasks = new List<Task>(_configuration.BestStoriesSize);
 
                 foreach (var storyId in topCountStoryIds)
                 {
-                    var storyDetails = await _hackerNewsClient.GetStoryDetailsAsync(storyId);
-                    if (storyDetails == null)
-                        continue;
-
-                    results.Add(storyDetails);
+                    tasks.Add(Task.Run(async () =>
+                    {
+                        var storyDetails = await _hackerNewsClient.GetStoryDetailsAsync(storyId);
+                        results.Add(storyDetails);
+                    }));
                 }
+
+                await Task.WhenAll(tasks);
 
                 return results.OrderByDescending(r => r.Score).ToList();
             }
