@@ -14,7 +14,11 @@ namespace CoreHackerNews
         private readonly Uri _baseUri;
         private bool disposedValue;
 
-        public HackerNewsClient(NewsConfiguration configuration)
+        public HackerNewsClient(NewsConfiguration configuration) : this(configuration, null)
+        {
+        }
+
+        public HackerNewsClient(NewsConfiguration configuration, HttpClient httpClient)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
@@ -23,7 +27,7 @@ namespace CoreHackerNews
                 throw new ArgumentException($"Invalid {nameof(configuration)}");
 
             _baseUri = configuration.HackerNewsApiUrl;
-            _httpClient = new HttpClient();
+            _httpClient = httpClient ?? new HttpClient();
         }
 
         public async Task<ICollection<int>> GetBestStoriesIdsAsync()
@@ -36,20 +40,11 @@ namespace CoreHackerNews
         {
             using var response = await SendGetRequestAsync(requestUri);
 
-            if (response.IsSuccessStatusCode)
-            {
-                var responseJson = await response.Content.ReadAsStringAsync();
-                if (string.IsNullOrWhiteSpace(responseJson))
-                {
-                    return default;
-                }
-
-                return JsonConvert.DeserializeObject<T>(responseJson);
-            }
-            else
-            {
+            if (!response.IsSuccessStatusCode)
                 throw new HackerNewsClientException(response.StatusCode, response.ReasonPhrase);
-            }
+
+            var responseJson = await response.Content.ReadAsStringAsync();
+            return string.IsNullOrWhiteSpace(responseJson) ? default : JsonConvert.DeserializeObject<T>(responseJson);
         }
 
         private async Task<HttpResponseMessage> SendGetRequestAsync(Uri requestUri)

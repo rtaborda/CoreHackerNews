@@ -12,7 +12,9 @@ namespace CoreHackerNews.Models
 
         public Uri HackerNewsApiUrl { get; set; }
 
-        public bool IsValid => !string.IsNullOrWhiteSpace(CacheKey) && BestStoriesSize > 0 &&
-            HackerNewsApiUrl != null;
+        public bool IsValid => !string.IsNullOrWhiteSpace(CacheKey) &&
+                               CacheExpirationInSeconds > 0 &&
+                               BestStoriesSize > 0 &&
+                               HackerNewsApiUrl != null;
     }
 }
