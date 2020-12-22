@@ -17,7 +17,7 @@ From the command line navigate to `CoreHackerNews\CoreHackerNews` and run the co
 From the command line navigate to `CoreHackerNews\CoreHackerNews` (same directory as for the build) and run the command `dotnet run`.
 
 ## How to run the unit tests
-From the command line navigate to `CoreHackerNews\CoreHackerNews` and run the command `dotnet test`.
+From the command line navigate to `CoreHackerNews\CoreHackerNewsTests` and run the command `dotnet test`.
 
 ## Url for the SwaggerUI
 For checking the auto-generated documentation open the following url on the browser: https://localhost:5001/api/documentation.
