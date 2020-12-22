@@ -7,8 +7,9 @@ I assumed that I didn't need to filter out the items that have `Dead` and `Delet
 I also assumed that the endpoint https://hacker-news.firebaseio.com/v0/beststories.json only returns items with `"type": "story"`.
 
 ## Improvements
-The main improvement I would do would be to use a proper distributed cache like Redis, instead of the built in IMemoryCache.
-Some other small improvements that could be made would be to improve the swagger generated documentation and using Serilog instead of the default Microsoft logging.
+The main improvement I would do would be to use a proper distributed cache like Redis, instead of the built in IMemoryCache.  
+Some other small improvements that could be made would be to improve the swagger generated documentation and to use Serilog instead of the default Microsoft logging.  
+If this service increased in scope and size other improvements could be done, like add authentication, add logging to file, extract businness rules to a new class library project (maybe even make it a NuGet package if that business logic would need to be reused somewhere else), etc.
 
 ## How to build and run
 ### Build
