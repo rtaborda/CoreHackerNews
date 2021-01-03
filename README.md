@@ -1,5 +1,7 @@
 # CoreHackerNews
 
+Small exercise for a job interview.
+
 ## Assumptions
 Given the sentence _The API should return an array of the first 20 "best stories" as returned by the Hacker News API, sorted by their score in a descending order._
 I assumed that I didn't need to filter out the items that have `Dead` and `Deleted` as `true`.
